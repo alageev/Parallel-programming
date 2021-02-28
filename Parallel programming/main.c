@@ -34,46 +34,46 @@ void reduce(double*, double*, const int);
 
 //MARK:- main()
 int main(int argc, const char * argv[]) {
-    
+
     int const length = 500000;
     unsigned seed;
     double results[50] = { 0 };
-    
+
     struct timeval startTime;
     struct timeval endTime;
-    gettimeofday(&startTime, DST_NONE);
-    
+    gettimeofday(&startTime, NULL);
+
     for (unsigned i = 0; i < 50; i++) {
         srand(i);
         double firstArray[length];
         double secondArray[length / 2];
-        
+
         //MARK:- Generate
         seed = i;
         generateTwoArrays(firstArray, secondArray, length, &seed);
-        
-        
+
+
         //MARK:- Map
         map(firstArray, secondArray, length);
-        
-        
+
+
         //MARK:- Merge
         merge(firstArray, secondArray, length);
-        
-        
+
+
         //MARK:- Sort
         selectionSort(secondArray, length / 2);
-        
-        
+
+
         //MARK:- Reduce
         reduce(secondArray, results + i, length / 2);
     }
-    
-    gettimeofday(&endTime, DST_NONE);
+
+    gettimeofday(&endTime, NULL);
     long const workTime = 1000 * (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_usec - startTime.tv_usec) / 1000;
-    
+
     printf("\nN=%d. Milliseconds passed: %ld\n", length, workTime);
-    
+
 //    for (int i = 0; i < 50; i++) {
 //        std::cout << "results[" << i << "] = "
 //                  << std::setprecision(std::numeric_limits<double>::digits10 + 100) << results[i] << std::endl;
@@ -125,13 +125,13 @@ void merge(double* first, double* second, int length) {
 void selectionSort(double* array, const int length) {
     for (int i = 0; i < length - 1; i++) {
         int minIndex = i;
-        
+
         for (int j = i + 1; j < length; j++) {
             if (array[j] < array[minIndex]) {
                 minIndex = j;
             }
         }
-        
+
         if (minIndex != i) {
             double const temp = array[i];
             array[i] = array[minIndex];
@@ -145,21 +145,19 @@ void selectionSort(double* array, const int length) {
 /// @param result a value that should be returned as result of this function
 /// @param length length of the array
 void reduce(double* array, double* result, const int length) {
-    
+
     double minNonZero = __DBL_MAX__;
-    
+
     for (int j = 0; j < length / 2; j++) {
         double value = array[j];
         if (minNonZero > value && value != 0) {
             minNonZero = value;
         }
     }
-    
+
     for (int j = 0; j < length / 2; j++) {
         if ((int)floor(array[j] / minNonZero) % 2) {
             *result += sin(array[j]);
         }
     }
 }
-
-
