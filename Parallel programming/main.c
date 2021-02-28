@@ -35,7 +35,7 @@ void reduce(double*, double*, const int);
 //MARK:- main()
 int main(int argc, const char * argv[]) {
     
-    int const length = 500000;
+    int const length = atoi(argv[1]);
     unsigned seed;
     double results[50] = { 0 };
     
