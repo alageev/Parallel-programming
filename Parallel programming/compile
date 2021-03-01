@@ -1,0 +1,6 @@
+#!/bin/bash
+gcc -O3 -Wall -Werror main.c -o lab1-seq -lm
+for i in 1 2 4 8
+do
+    gcc -O3 -Wall -Werror -floop-parallelize-all -ftree-parallelize-loops=$i main.c -o lab1-par-$i -lm
+done
