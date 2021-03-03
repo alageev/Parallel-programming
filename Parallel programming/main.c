@@ -12,6 +12,7 @@
 
 //MARK:- Task
 // A = сount(Агеев) * сount(Алексей) * сount(Дмитриевич) = 5 * 7 * 10 = 350
+#define A 350
 
 // X_1 = 1 + ((350 mod 47) mod 7) = 1 + (21 mod 7) = 1
 // Гиперболический синус с последующим возведением в квадрат
@@ -70,14 +71,9 @@ int main(int argc, const char * argv[]) {
     }
 
     gettimeofday(&endTime, NULL);
-    long const workTime = 1000 * (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_usec - startTime.tv_usec) / 1000;
+    long const workTime = (endTime.tv_sec - startTime.tv_sec) / 1000 + (endTime.tv_usec - startTime.tv_usec) * 1000;
 
     printf("\nN=%d. Milliseconds passed: %ld\n", length, workTime);
-
-//    for (int i = 0; i < 50; i++) {
-//        std::cout << "results[" << i << "] = "
-//                  << std::setprecision(std::numeric_limits<double>::digits10 + 100) << results[i] << std::endl;
-//    }
 }
 
 /// This function fills two arrays using generation task
@@ -87,10 +83,10 @@ int main(int argc, const char * argv[]) {
 /// @param seed the seed for rand_r() function
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
     for (int j = 0; j < length; j++) {
-        first[j] = rand_r(seed) % 350 + 1;
+        first[j] = rand_r(seed) % A + 1;
     }
     for (int j = 0; j < length / 2; j++) {
-        second[j] = 350 + rand_r(seed) % (9 * 350 + 1);
+        second[j] = A + rand_r(seed) % (9 * A + 1);
     }
 }
 
