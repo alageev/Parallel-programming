@@ -71,7 +71,7 @@ int main(int argc, const char * argv[]) {
     }
 
     gettimeofday(&endTime, NULL);
-    long const workTime = (endTime.tv_sec - startTime.tv_sec) / 1000 + (endTime.tv_usec - startTime.tv_usec) * 1000;
+    long const workTime = 1000 * (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_usec - startTime.tv_usec) / 1000;
 
     printf("\nN=%d. Milliseconds passed: %ld\n", length, workTime);
 }
