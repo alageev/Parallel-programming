@@ -1,0 +1,12 @@
+#!/bin/bash
+
+dest="delta_ms"
+touch $dest
+cat /dev/null > $dest
+delta=2370
+n=1300
+for i in {0..10}
+do
+    let "x =$n + $delta * $i"
+    echo -e `./main $x` >> $dest
+done
