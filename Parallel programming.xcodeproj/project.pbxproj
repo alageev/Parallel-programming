@@ -23,10 +23,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6F02D12C262048C1007629D5 /* delta_ms */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms; sourceTree = "<group>"; };
 		6F02D12D262048C1007629D5 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		6F02D12E262048C1007629D5 /* automate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = automate; sourceTree = "<group>"; };
 		6F02D12F262048C1007629D5 /* compile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = compile; sourceTree = "<group>"; };
+		6F02D13326204B56007629D5 /* delta_ms_8 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_8; sourceTree = "<group>"; };
+		6F02D13526204B56007629D5 /* delta_ms_2 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_2; sourceTree = "<group>"; };
+		6F02D13626204B56007629D5 /* delta_ms */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms; sourceTree = "<group>"; };
+		6F02D13726204B56007629D5 /* delta_ms_800 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_800; sourceTree = "<group>"; };
+		6F02D13826204B56007629D5 /* delta_ms_80 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_80; sourceTree = "<group>"; };
+		6F02D13926204B56007629D5 /* delta_ms_4 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_4; sourceTree = "<group>"; };
+		6F02D13A26204B57007629D5 /* delta_ms_1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_1; sourceTree = "<group>"; };
+		6F02D13B26204B57007629D5 /* delta_ms_8000 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = delta_ms_8000; sourceTree = "<group>"; };
 		6FF4A05325D6652800E30B61 /* Parallel programming */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Parallel programming"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -41,6 +48,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6F02D14026204C44007629D5 /* measurements */ = {
+			isa = PBXGroup;
+			children = (
+				6F02D13626204B56007629D5 /* delta_ms */,
+				6F02D13A26204B57007629D5 /* delta_ms_1 */,
+				6F02D13526204B56007629D5 /* delta_ms_2 */,
+				6F02D13926204B56007629D5 /* delta_ms_4 */,
+				6F02D13326204B56007629D5 /* delta_ms_8 */,
+				6F02D13826204B56007629D5 /* delta_ms_80 */,
+				6F02D13726204B56007629D5 /* delta_ms_800 */,
+				6F02D13B26204B57007629D5 /* delta_ms_8000 */,
+			);
+			path = measurements;
+			sourceTree = "<group>";
+		};
 		6FF4A04A25D6652800E30B61 = {
 			isa = PBXGroup;
 			children = (
@@ -60,10 +82,10 @@
 		6FF4A05525D6652800E30B61 /* Parallel programming */ = {
 			isa = PBXGroup;
 			children = (
+				6F02D12D262048C1007629D5 /* main.cpp */,
+				6F02D14026204C44007629D5 /* measurements */,
 				6F02D12E262048C1007629D5 /* automate */,
 				6F02D12F262048C1007629D5 /* compile */,
-				6F02D12C262048C1007629D5 /* delta_ms */,
-				6F02D12D262048C1007629D5 /* main.cpp */,
 			);
 			path = "Parallel programming";
 			sourceTree = "<group>";
