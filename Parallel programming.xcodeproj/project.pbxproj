@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6FF4A05725D6652800E30B61 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6FF4A05625D6652800E30B61 /* main.c */; };
+		6F02D12A2620467B007629D5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6F02D1292620467B007629D5 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,11 +23,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6F15553025EF5B7900325AF5 /* plots.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
-		6F15553125EF5B7900325AF5 /* compile */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = compile; sourceTree = "<group>"; };
-		6F15553225EF5B7900325AF5 /* automate */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = automate; sourceTree = "<group>"; };
+		6F02D1262620467B007629D5 /* automate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = automate; path = ../../../../../../../../Desktop/week2/automate; sourceTree = "<group>"; };
+		6F02D1272620467B007629D5 /* delta_ms */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = delta_ms; path = ../../../../../../../../Desktop/week2/delta_ms; sourceTree = "<group>"; };
+		6F02D1282620467B007629D5 /* compile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = compile; path = ../../../../../../../../Desktop/week2/compile; sourceTree = "<group>"; };
+		6F02D1292620467B007629D5 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../../../../../../Desktop/week2/main.cpp; sourceTree = "<group>"; };
 		6FF4A05325D6652800E30B61 /* Parallel programming */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Parallel programming"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FF4A05625D6652800E30B61 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,10 +60,10 @@
 		6FF4A05525D6652800E30B61 /* Parallel programming */ = {
 			isa = PBXGroup;
 			children = (
-				6FF4A05625D6652800E30B61 /* main.c */,
-				6F15553225EF5B7900325AF5 /* automate */,
-				6F15553125EF5B7900325AF5 /* compile */,
-				6F15553025EF5B7900325AF5 /* plots.py */,
+				6F02D1262620467B007629D5 /* automate */,
+				6F02D1282620467B007629D5 /* compile */,
+				6F02D1272620467B007629D5 /* delta_ms */,
+				6F02D1292620467B007629D5 /* main.cpp */,
 			);
 			path = "Parallel programming";
 			sourceTree = "<group>";
@@ -124,7 +124,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FF4A05725D6652800E30B61 /* main.c in Sources */,
+				6F02D12A2620467B007629D5 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
