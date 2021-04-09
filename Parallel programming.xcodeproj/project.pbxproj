@@ -60,10 +60,10 @@
 		6FF4A05525D6652800E30B61 /* Parallel programming */ = {
 			isa = PBXGroup;
 			children = (
+				6F02D1292620467B007629D5 /* main.cpp */,
 				6F02D1262620467B007629D5 /* automate */,
 				6F02D1282620467B007629D5 /* compile */,
 				6F02D1272620467B007629D5 /* delta_ms */,
-				6F02D1292620467B007629D5 /* main.cpp */,
 			);
 			path = "Parallel programming";
 			sourceTree = "<group>";
