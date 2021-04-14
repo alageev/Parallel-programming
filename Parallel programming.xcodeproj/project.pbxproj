@@ -23,7 +23,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6F15553025EF5B7900325AF5 /* plots.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
 		6F15553125EF5B7900325AF5 /* compile */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = compile; sourceTree = "<group>"; };
 		6F15553225EF5B7900325AF5 /* automate */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = automate; sourceTree = "<group>"; };
 		6FF4A05325D6652800E30B61 /* Parallel programming */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Parallel programming"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,7 +62,6 @@
 				6FF4A05625D6652800E30B61 /* main.c */,
 				6F15553225EF5B7900325AF5 /* automate */,
 				6F15553125EF5B7900325AF5 /* compile */,
-				6F15553025EF5B7900325AF5 /* plots.py */,
 			);
 			path = "Parallel programming";
 			sourceTree = "<group>";
