@@ -15,7 +15,7 @@
 
 //MARK:- Task
 // A = сount(Агеев) * сount(Алексей) * сount(Дмитриевич) = 5 * 7 * 10 = 350
-#define A 350
+int const aTask = 350;
 
 // X_1 = 1 + ((350 mod 47) mod 7) = 1 + (21 mod 7) = 1
 // Гиперболический синус с последующим возведением в квадрат
@@ -98,29 +98,29 @@ void generateTwoArrays(double* first, double* second, int length, unsigned* seed
 /// @param second Second Array
 /// @param length Length of the first array
 void map(double* first, double* second, int length) {
-  int l2 = length / 2;
-  double* secondCopy = ippsMalloc_64f(l2);
-  double* ct = secondCopy + 1;
-  ippsCopy_64f(second, secondCopy, l2);
-  for (int i = 1; i < l2; i++) {
-    *ct = *(ct - 1);
-    ct++;
-  }
-  *secondCopy = 0;
-  ippsSinh_64f_A50(first, first, length);
+    int l2 = length / 2;
+    double* secondCopy = ippsMalloc_64f(l2);
+    double* ct = secondCopy + 1;
+    ippsCopy_64f(second, secondCopy, l2);
+    for (int i = 1; i < l2; i++) {
+      *ct = *(ct - 1);
+      ct++;
+    }
+    *secondCopy = 0;
+    ippsSinh_64f_A50(first, first, length);
+    ippsPowx_64f_A50(first, 2, first, length);
+    
+    ippsAdd_64f(second, secondCopy, second, l2);
+    ippsLog10_64f_A50(second, second, l2);
+    ippsPowx_64f_A50(second, M_E, second, l2);
+    ippsFree(secondCopy);
 
-  ippsAdd_64f(second, secondCopy, second, l2);
-  ippsLog10_64f_A50(second, second, l2);
-  ippsPowx_64f_A50(second, 2, second, l2);
-  ippsFree(secondCopy);
-  /*
-    for (int j = 0; j < length; j++) {
-        first[j] = pow(sinh(first[j]), 2);
-    }
-    for (int j = length / 2 - 1; j > 0; j--) {
-        second[j] = pow(log10(second[j] + second[j - 1]), M_E);
-    }
-    */
+//    for (int j = 0; j < length; j++) {
+//        first[j] = pow(sinh(first[j]), 2);
+//    }
+//    for (int j = length / 2 - 1; j > 0; j--) {
+//        second[j] = pow(log10(second[j] + second[j - 1]), M_E);
+//    }
 }
 
 /// This function merges two arrays
@@ -128,14 +128,14 @@ void map(double* first, double* second, int length) {
 /// @param second Second Array
 /// @param length Length of the first array
 void merge(double* first, double* second, int length) {
-  ippsMaxEvery_64f(first, second, second, length / 2);
-  /*
-    for (int j = 0; j < length / 2; j++) {
-        if (first[j] > second[j]) {
-            second[j] = first[j];
-        }
-    }
-  */
+    ippsMaxEvery_64f(first, second, second, length / 2);
+    
+//    for (int j = 0; j < length / 2; j++) {
+//        if (first[j] > second[j]) {
+//            second[j] = first[j];
+//        }
+//    }
+     
 }
 
 /// This function sorts given array using selection sorting algorithm
