@@ -86,10 +86,10 @@ int main(int argc, const char * argv[]) {
 /// @param seed the seed for rand_r() function
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
     for (int j = 0; j < length; j++) {
-        first[j] = rand_r(seed) % A + 1;
+        first[j] = rand_r(seed) % aTask + 1;
     }
     for (int j = 0; j < length / 2; j++) {
-        second[j] = A + rand_r(seed) % (9 * A + 1);
+        second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
     }
 }
 
