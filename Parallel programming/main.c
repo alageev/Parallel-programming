@@ -10,9 +10,10 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
+
 //MARK:- Task
 // A = сount(Агеев) * сount(Алексей) * сount(Дмитриевич) = 5 * 7 * 10 = 350
-#define A 350
+int const aTask = 350;
 
 // X_1 = 1 + ((350 mod 47) mod 7) = 1 + (21 mod 7) = 1
 // Гиперболический синус с последующим возведением в квадрат
@@ -83,10 +84,10 @@ int main(int argc, const char * argv[]) {
 /// @param seed the seed for rand_r() function
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
     for (int j = 0; j < length; j++) {
-        first[j] = rand_r(seed) % A + 1;
+        first[j] = rand_r(seed) % aTask + 1;
     }
     for (int j = 0; j < length / 2; j++) {
-        second[j] = A + rand_r(seed) % (9 * A + 1);
+        second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
     }
 }
 
