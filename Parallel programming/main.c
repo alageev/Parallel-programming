@@ -151,10 +151,14 @@ void reduce(double* array, double* result, const int length) {
             minNonZero = value;
         }
     }
-
+    
+    
+    double res = 0;
+    #define omp parallel for reduction(+:res)
     for (int j = 0; j < length / 2; j++) {
         if ((int)floor(array[j] / minNonZero) % 2) {
-            *result += sin(array[j]);
+            res += sin(array[j]);
         }
     }
+    *result = res;
 }
