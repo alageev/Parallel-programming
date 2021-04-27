@@ -83,11 +83,16 @@ int main(int argc, const char * argv[]) {
 /// @param length Length of the first array
 /// @param seed the seed for rand_r() function
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
-    for (int j = 0; j < length; j++) {
-        first[j] = rand_r(seed) % aTask + 1;
-    }
-    for (int j = 0; j < length / 2; j++) {
-        second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int j = 0; j < length; j++) {
+            first[j] = rand_r(seed) % aTask + 1;
+        }
+        #pragma omp for
+        for (int j = 0; j < length / 2; j++) {
+            second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
+        }
     }
 }
 
@@ -96,11 +101,18 @@ void generateTwoArrays(double* first, double* second, int length, unsigned* seed
 /// @param second Second Array
 /// @param length Length of the first array
 void map(double* first, double* second, int length) {
-    for (int j = 0; j < length; j++) {
-        first[j] = pow(sinh(first[j]), 2);
-    }
-    for (int j = length / 2 - 1; j > 0; j--) {
-        second[j] = pow(log10(second[j] + second[j - 1]), M_E);
+    
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int j = 0; j < length; j++) {
+            first[j] = pow(sinh(first[j]), 2);
+        }
+        
+        #pragma omp for//??????????????
+        for (int j = length / 2 - 1; j > 0; j--) {
+            second[j] = pow(log10(second[j] + second[j - 1]), M_E);
+        }
     }
 }
 
@@ -109,6 +121,8 @@ void map(double* first, double* second, int length) {
 /// @param second Second Array
 /// @param length Length of the first array
 void merge(double* first, double* second, int length) {
+    
+    #pragma omp parallel for shared(first, second)
     for (int j = 0; j < length / 2; j++) {
         if (first[j] > second[j]) {
             second[j] = first[j];
@@ -122,9 +136,11 @@ void merge(double* first, double* second, int length) {
 void selectionSort(double* array, const int length) {
     for (int i = 0; i < length - 1; i++) {
         int minIndex = i;
-
+        
+        #pragma omp parallel for shared(minIndex)
         for (int j = i + 1; j < length; j++) {
             if (array[j] < array[minIndex]) {
+                #pragma omp atomic
                 minIndex = j;
             }
         }
@@ -144,20 +160,25 @@ void selectionSort(double* array, const int length) {
 void reduce(double* array, double* result, const int length) {
 
     double minNonZero = __DBL_MAX__;
-
-    for (int j = 0; j < length / 2; j++) {
-        double value = array[j];
-        if (minNonZero > value && value != 0) {
-            minNonZero = value;
-        }
-    }
-    
-    
     double res = 0;
-    #define omp parallel for reduction(+:res)
-    for (int j = 0; j < length / 2; j++) {
-        if ((int)floor(array[j] / minNonZero) % 2) {
-            res += sin(array[j]);
+    
+    #pragma omp parallel
+    {
+        #pragma omp for reduction(min:minNonZero)
+        for (int j = 0; j < length / 2; j++) {
+            double value = array[j];
+            if (minNonZero > value && value != 0) {
+                minNonZero = value;
+            }
+        }
+        
+        
+
+        #pragma omp for reduction(+:res)
+        for (int j = 0; j < length / 2; j++) {
+            if ((int)floor(array[j] / minNonZero) % 2) {
+                res += sin(array[j]);
+            }
         }
     }
     *result = res;
