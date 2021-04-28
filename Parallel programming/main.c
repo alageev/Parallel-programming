@@ -46,7 +46,7 @@ int main(int argc, const char * argv[]) {
     struct timeval endTime;
     gettimeofday(&startTime, NULL);
 
-    for (unsigned i = 0; i < 50; i++) {
+    for (unsigned i = 0; i < 5; i++) {
         srand(i);
         double firstArray[length];
         double secondArray[length / 2];
@@ -70,6 +70,7 @@ int main(int argc, const char * argv[]) {
 
         //MARK:- Reduce
         reduce(secondArray, results + i, length / 2);
+        printf("%f ", *(results + i));
     }
 
     gettimeofday(&endTime, NULL);
@@ -84,17 +85,17 @@ int main(int argc, const char * argv[]) {
 /// @param length Length of the first array
 /// @param seed the seed for rand_r() function
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
-    #pragma omp parallel
-    {
-        #pragma omp for
+    //#pragma omp parallel shared(first, second)
+    //{
+        //#pragma omp for
         for (int j = 0; j < length; j++) {
             first[j] = rand_r(seed) % aTask + 1;
         }
-        #pragma omp for
+        //#pragma omp for
         for (int j = 0; j < length / 2; j++) {
             second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
         }
-    }
+    //}
 }
 
 /// This function maps some functions over the array
@@ -137,12 +138,16 @@ void merge(double* first, double* second, int length) {
 void selectionSort(double* array, const int length) {
     for (int i = 0; i < length - 1; i++) {
         int minIndex = i;
+        int localIndex = minIndex;
 
-        #pragma omp parallel for shared(minIndex) schedule(static, 2000)
-        for (int j = i + 1; j < length; j++) {
-            if (array[j] < array[minIndex]) {
-                minIndex = j;
-            }
+        #pragma omp parallel shared(minIndex) private(localIndex)
+        {
+            #pragma omp for
+            for (int j = i + 1; j < length; j++)
+                if (array[j] < array[localIndex]) localIndex = j;
+
+            #pragma omp critical
+            if (localIndex < minIndex) minIndex = localIndex;
         }
 
         if (minIndex != i) {
