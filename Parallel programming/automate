@@ -3,8 +3,8 @@
 dest="delta_ms"
 touch $dest
 cat /dev/null > $dest
-delta=2370
-n=1300
+delta=3550
+n=1500
 for i in {0..10}
 do
     let "x =$n + $delta * $i"
