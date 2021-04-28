@@ -9,4 +9,5 @@ for i in {0..10}
 do
     let "x =$n + $delta * $i"
     echo -e `./main $x` >> $dest
+    sudo bash -c "sync; echo 1 > /proc/sys/vm/drop_caches"
 done
