@@ -1,11 +1,10 @@
 #!/bin/bash
-read -p "Input command: " command
-read -p "Input destination file: " dest
-read -p "Input base value: " n
-read -p "Input delta: " delta
-
+dest="delta_ms"
 touch $dest
 cat /dev/null > $dest
+n=1500
+delta=3550
+command="./main"
 
 for i in {0..10}
 do
