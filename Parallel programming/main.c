@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <stdlib.h>
+#include <omp.h>
 
 
 //MARK:- Task
@@ -36,7 +37,7 @@ void reduce(double*, double*, const int);
 
 //MARK:- main()
 int main(int argc, const char * argv[]) {
-    
+
     int const length = atoi(argv[1]);
     unsigned seed;
     double results[50] = { 0 };
@@ -101,15 +102,15 @@ void generateTwoArrays(double* first, double* second, int length, unsigned* seed
 /// @param second Second Array
 /// @param length Length of the first array
 void map(double* first, double* second, int length) {
-    
+
     #pragma omp parallel
     {
         #pragma omp for
         for (int j = 0; j < length; j++) {
             first[j] = pow(sinh(first[j]), 2);
         }
-        
-        #pragma omp for//??????????????
+
+        //#pragma omp for//??????????????
         for (int j = length / 2 - 1; j > 0; j--) {
             second[j] = pow(log10(second[j] + second[j - 1]), M_E);
         }
@@ -121,7 +122,7 @@ void map(double* first, double* second, int length) {
 /// @param second Second Array
 /// @param length Length of the first array
 void merge(double* first, double* second, int length) {
-    
+
     #pragma omp parallel for shared(first, second)
     for (int j = 0; j < length / 2; j++) {
         if (first[j] > second[j]) {
@@ -136,11 +137,10 @@ void merge(double* first, double* second, int length) {
 void selectionSort(double* array, const int length) {
     for (int i = 0; i < length - 1; i++) {
         int minIndex = i;
-        
+
         #pragma omp parallel for shared(minIndex)
         for (int j = i + 1; j < length; j++) {
             if (array[j] < array[minIndex]) {
-                #pragma omp atomic
                 minIndex = j;
             }
         }
@@ -161,7 +161,7 @@ void reduce(double* array, double* result, const int length) {
 
     double minNonZero = __DBL_MAX__;
     double res = 0;
-    
+
     #pragma omp parallel
     {
         #pragma omp for reduction(min:minNonZero)
@@ -171,8 +171,6 @@ void reduce(double* array, double* result, const int length) {
                 minNonZero = value;
             }
         }
-        
-        
 
         #pragma omp for reduction(+:res)
         for (int j = 0; j < length / 2; j++) {
