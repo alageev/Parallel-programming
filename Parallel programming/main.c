@@ -138,7 +138,7 @@ void selectionSort(double* array, const int length) {
     for (int i = 0; i < length - 1; i++) {
         int minIndex = i;
 
-        #pragma omp parallel for shared(minIndex)
+        #pragma omp parallel for shared(minIndex) schedule(static, 2000)
         for (int j = i + 1; j < length; j++) {
             if (array[j] < array[minIndex]) {
                 minIndex = j;
