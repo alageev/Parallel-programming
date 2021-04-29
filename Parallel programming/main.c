@@ -86,7 +86,7 @@ int main(int argc, const char * argv[]) {
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
     #pragma omp parallel
     {
-        #pragma omp for
+        #pragma omp for nowait //nowait introduced in lab4
         for (int j = 0; j < length; j++) {
             first[j] = rand_r(seed) % aTask + 1;
         }
