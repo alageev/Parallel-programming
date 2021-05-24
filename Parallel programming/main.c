@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  main.c
 //  Parallel programming
 //
 //  Created by Алексей Агеев on 12.02.2021.
@@ -9,12 +9,19 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <stdlib.h>
-#include <omp.h>
+#include "OpenMP sources/omp.h"
 
 
 //MARK:- Task
 // A = сount(Агеев) * сount(Алексей) * сount(Дмитриевич) = 5 * 7 * 10 = 350
 int const aTask = 350;
+#define NUMBER_OF_ITERATIONS 5
+
+//#ifdef _OPENMP
+//    #include "omp.h"
+//#else
+//    int omp_get_num_procs() { return 1; }
+//#endif
 
 // X_1 = 1 + ((350 mod 47) mod 7) = 1 + (21 mod 7) = 1
 // Гиперболический синус с последующим возведением в квадрат
@@ -33,6 +40,9 @@ void map(double*, double*, int);
 void merge(double*, double*, int);
 void selectionSort(double*, const int);
 void reduce(double*, double*, const int);
+void selectionSortOfPart(double*, const int, const int);
+//void mergeParts(double*, const int, const int);
+void mergeParts(double*, const int, const int, const int);
 
 
 //MARK:- main()
@@ -40,13 +50,15 @@ int main(int argc, const char * argv[]) {
 
     int const length = atoi(argv[1]);
     unsigned seed;
-    double results[50] = { 0 };
+    double results[NUMBER_OF_ITERATIONS] = { 0 };
 
-    struct timeval startTime;
-    struct timeval endTime;
-    gettimeofday(&startTime, NULL);
+//    struct timeval startTime;
+//    struct timeval endTime;
+//    gettimeofday(&startTime, NULL);
 
-    for (unsigned i = 0; i < 50; i++) {
+    double const startTime = omp_get_wtime();
+    
+    for (unsigned i = 0; i < NUMBER_OF_ITERATIONS; i++) {
         srand(i);
         double firstArray[length];
         double secondArray[length / 2];
@@ -72,10 +84,10 @@ int main(int argc, const char * argv[]) {
         reduce(secondArray, results + i, length / 2);
     }
 
-    gettimeofday(&endTime, NULL);
-    long const workTime = 1000 * (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_usec - startTime.tv_usec) / 1000;
-
-    printf("\nN=%d. Milliseconds passed: %ld\n", length, workTime);
+//    gettimeofday(&endTime, NULL);
+//    long const workTime = 1000 * (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_usec - startTime.tv_usec) / 1000;
+    
+    printf("\nN=%d. Milliseconds passed: %f\n", length, 1000 * (omp_get_wtime() - startTime));
 }
 
 /// This function fills two arrays using generation task
@@ -84,16 +96,13 @@ int main(int argc, const char * argv[]) {
 /// @param length Length of the first array
 /// @param seed the seed for rand_r() function
 void generateTwoArrays(double* first, double* second, int length, unsigned* seed) {
-    #pragma omp parallel
-    {
-        #pragma omp for nowait //nowait introduced in lab4
-        for (int j = 0; j < length; j++) {
-            first[j] = rand_r(seed) % aTask + 1;
-        }
-        #pragma omp for
-        for (int j = 0; j < length / 2; j++) {
-            second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
-        }
+    //force single-threaded for correct result
+    for (int j = 0; j < length; j++) {
+        first[j] = rand_r(seed) % aTask + 1;
+    }
+
+    for (int j = 0; j < length / 2; j++) {
+        second[j] = aTask + rand_r(seed) % (9 * aTask + 1);
     }
 }
 
@@ -103,17 +112,13 @@ void generateTwoArrays(double* first, double* second, int length, unsigned* seed
 /// @param length Length of the first array
 void map(double* first, double* second, int length) {
 
-    #pragma omp parallel
-    {
-        #pragma omp for
-        for (int j = 0; j < length; j++) {
-            first[j] = pow(sinh(first[j]), 2);
-        }
+    #pragma omp parallel for
+    for (int j = 0; j < length; j++) {
+        first[j] = pow(sinh(first[j]), 2);
+    }
 
-        //#pragma omp for//??????????????
-        for (int j = length / 2 - 1; j > 0; j--) {
-            second[j] = pow(log10(second[j] + second[j - 1]), M_E);
-        }
+    for (int j = length / 2 - 1; j > 0; j--) {
+        second[j] = pow(log10(second[j] + second[j - 1]), M_E);
     }
 }
 
@@ -135,25 +140,25 @@ void merge(double* first, double* second, int length) {
 /// @param array array that should be sorted
 /// @param length length of the array
 void selectionSort(double* array, const int length) {
-    for (int i = 0; i < length - 1; i++) {
-        int minIndex = i;
-
-        #pragma omp parallel for shared(minIndex)
-        for (int j = i + 1; j < length; j++) {
-            if (array[j] < array[minIndex]) {
-                minIndex = j;
-            }
+    int const numberOfSortingThreads = omp_get_num_procs() - 1;
+    int const partSize = length / numberOfSortingThreads;
+    int const lastPartSize = length - (numberOfSortingThreads) * partSize;
+    
+    #pragma omp parallel sections
+    {
+        for (int i = 0; i < numberOfSortingThreads; i++) {
+            #pragma omp section
+            selectionSortOfPart(array, i * partSize, partSize);
         }
-
-        if (minIndex != i) {
-            double const temp = array[i];
-            array[i] = array[minIndex];
-            array[minIndex] = temp;
-        }
+        
+        #pragma omp section
+        selectionSortOfPart(array, numberOfSortingThreads * partSize, lastPartSize);
     }
+    
+    mergeParts(array, partSize, length, numberOfSortingThreads + 1);
 }
 
-/// This function
+/// This function reduces array to result value
 /// @param array array that shoud be reduced
 /// @param result a value that should be returned as result of this function
 /// @param length length of the array
@@ -180,4 +185,105 @@ void reduce(double* array, double* result, const int length) {
         }
     }
     *result = res;
+}
+
+
+/// This function sorts given array using selection sorting algorithm
+/// @param array array that should be sorted
+/// @param offset offset index
+/// @param length length of the array
+void selectionSortOfPart(double* array, const int offset, const int length) {
+    
+    for (int i = offset; i < offset + length - 1; i++) {
+        int minIndex = i;
+        int localIndex = minIndex;
+
+        #pragma omp parallel shared(minIndex) private(localIndex)
+        {
+            #pragma omp for
+            for (int j = i + 1; j < offset + length; j++) {
+                if (array[j] < array[localIndex]) {
+                    localIndex = j;
+                }
+            }
+
+            #pragma omp critical
+            if (array[localIndex] < array[minIndex]) {
+                minIndex = localIndex;
+            }
+        }
+
+        if (minIndex != i) {
+            double const temp = array[i];
+            array[i] = array[minIndex];
+            array[minIndex] = temp;
+        }
+    }
+}
+
+
+/// This function merges parts of given array in ascending order
+/// @param array array whose parts should be merged
+/// @param partSize size of every of 0...k-1 part
+/// @param length length of the part
+/// @param numberOfParts number of parts in array
+void mergeParts(double* array, const int partSize, const int length, const int numberOfParts) {
+    double copy[length];
+    int indices[numberOfParts];
+    int indicesCeil[numberOfParts];
+    
+    
+    #pragma omp parallel shared(copy, array)
+    {
+        #pragma omp for nowait
+        for (int i = 0; i < length; i++) {
+            copy[i] = array[i];
+        }
+        
+        #pragma omp for
+        for (int i = 0; i < numberOfParts; i++) {
+            indices[i] = i * partSize;
+        }
+        
+        #pragma omp for
+        for (int i = 0; i < numberOfParts - 1; i++) {
+            indicesCeil[i] = indices[i + 1];
+        }
+        
+        indicesCeil[numberOfParts - 1] = length;
+    }
+    
+    for (int i = 0; i < length; i++) {
+        int position = 0;
+        
+        for (int j = 0; j < numberOfParts; j++) {
+            if (indices[j] < indicesCeil[j]) {
+                position = j;
+                break;
+            }
+        }
+        
+        int localPosition = position;
+        
+        #pragma omp parallel shared(position) private(localPosition)
+        {
+            
+            #pragma omp for
+            for (int j = 0; j < numberOfParts; j++) {
+                if (indices[j] < indicesCeil[j]) {
+                    if (copy[indices[j]] < copy[indices[localPosition]]) {
+                        localPosition = j;
+                    }
+                }
+            }
+            
+            #pragma omp critical
+            if (copy[indices[localPosition]] < copy[indices[position]]) {
+                position = localPosition;
+            }
+        }
+        
+        array[i] = copy[indices[position]];
+        indices[position]++;
+    }
 }
