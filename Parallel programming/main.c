@@ -228,6 +228,16 @@ void selectionSortOfPart(double* array, const int offset, const int length) {
 /// @param length length of the part
 /// @param numberOfParts number of parts in array
 void mergeParts(double* array, const int partSize, const int length, const int numberOfParts) {
+    
+    selectionSortOfPart(array, 0, length);
+    
+    // Сергей Мороз сказал, что mergesort тут использовать не надо было
+    // надо было просто отсортировать массив ещё раз
+    // честно плакал, когда услышал это
+    // потому что дебажил этот код как никогда не дебажил
+    // оставлю его тут на память
+    
+    /*
     double copy[length];
     int indices[numberOfParts];
     int indicesCeil[numberOfParts];
@@ -286,4 +296,5 @@ void mergeParts(double* array, const int partSize, const int length, const int n
         array[i] = copy[indices[position]];
         indices[position]++;
     }
+    */
 }
