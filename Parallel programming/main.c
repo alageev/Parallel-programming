@@ -9,19 +9,45 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <stdlib.h>
-#include "OpenMP sources/omp.h"
+#include <unistd.h>
+
+//#include "OpenMP sources/omp.h"
+#ifdef _OPENMP
+
+#include "omp.h"
+void timer(int* completion) {
+    while (*completion < 100) {
+        sleep(1);
+        printf("completion: %d\n", *completion);
+    }
+}
+
+#else
+
+double omp_get_wtime() {
+    return 0.0;
+}
+
+int omp_get_num_procs() {
+    return 1;
+}
+
+void timer(int* completion) {
+    unsigned second = 0;
+    while (*completion < 100) {
+        printf("%d: %d\n", second, *completion);
+        sleep(1);
+        second++;
+    }
+}
+#endif// ifdef _OPENMP
+
 
 
 //MARK:- Task
 // A = сount(Агеев) * сount(Алексей) * сount(Дмитриевич) = 5 * 7 * 10 = 350
 int const aTask = 350;
 #define NUMBER_OF_ITERATIONS 5
-
-//#ifdef _OPENMP
-//    #include "omp.h"
-//#else
-//    int omp_get_num_procs() { return 1; }
-//#endif
 
 // X_1 = 1 + ((350 mod 47) mod 7) = 1 + (21 mod 7) = 1
 // Гиперболический синус с последующим возведением в квадрат
@@ -43,51 +69,59 @@ void reduce(double*, double*, const int);
 void selectionSortOfPart(double*, const int, const int);
 //void mergeParts(double*, const int, const int);
 void mergeParts(double*, const int, const int, const int);
-
+void timer(int*);
 
 //MARK:- main()
 int main(int argc, const char * argv[]) {
 
-    int const length = atoi(argv[1]);
-    unsigned seed;
-    double results[NUMBER_OF_ITERATIONS] = { 0 };
-
-//    struct timeval startTime;
-//    struct timeval endTime;
-//    gettimeofday(&startTime, NULL);
-
-    double const startTime = omp_get_wtime();
+    #pragma omp parallel sections
+    {
+        int completion = 0;
+        
+        #pragma omp section shared(completion)
+        {
+            timer(&completion);
+        }
     
-    for (unsigned i = 0; i < NUMBER_OF_ITERATIONS; i++) {
-        srand(i);
-        double firstArray[length];
-        double secondArray[length / 2];
+        #pragma omp section shared(completion)
+        {
+            int const length = atoi(argv[1]);
+            unsigned seed;
+            double results[NUMBER_OF_ITERATIONS] = { 0 };
 
-        //MARK:- Generate
-        seed = i;
-        generateTwoArrays(firstArray, secondArray, length, &seed);
+            double const startTime = omp_get_wtime();
+            
+            for (unsigned i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+                srand(i);
+                double firstArray[length];
+                double secondArray[length / 2];
 
-
-        //MARK:- Map
-        map(firstArray, secondArray, length);
-
-
-        //MARK:- Merge
-        merge(firstArray, secondArray, length);
-
-
-        //MARK:- Sort
-        selectionSort(secondArray, length / 2);
+                //MARK:- Generate
+                seed = i;
+                generateTwoArrays(firstArray, secondArray, length, &seed);
 
 
-        //MARK:- Reduce
-        reduce(secondArray, results + i, length / 2);
+                //MARK:- Map
+                map(firstArray, secondArray, length);
+
+
+                //MARK:- Merge
+                merge(firstArray, secondArray, length);
+
+
+                //MARK:- Sort
+                selectionSort(secondArray, length / 2);
+
+
+                //MARK:- Reduce
+                reduce(secondArray, results + i, length / 2);
+                
+                completion += 100 / NUMBER_OF_ITERATIONS;
+            }
+            
+            printf("\nN=%d. Milliseconds passed: %f\n", length, 1000 * (omp_get_wtime() - startTime));
+        }
     }
-
-//    gettimeofday(&endTime, NULL);
-//    long const workTime = 1000 * (endTime.tv_sec - startTime.tv_sec) + (endTime.tv_usec - startTime.tv_usec) / 1000;
-    
-    printf("\nN=%d. Milliseconds passed: %f\n", length, 1000 * (omp_get_wtime() - startTime));
 }
 
 /// This function fills two arrays using generation task

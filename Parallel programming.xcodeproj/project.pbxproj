@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6FB964842637043A007FAE27 /* stubs.c in Sources */ = {isa = PBXBuildFile; fileRef = 6FB964802637043A007FAE27 /* stubs.c */; };
 		6FF4A05725D6652800E30B61 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6FF4A05625D6652800E30B61 /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -27,10 +26,6 @@
 		6F15553025EF5B7900325AF5 /* plots.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = plots.py; sourceTree = "<group>"; };
 		6F15553125EF5B7900325AF5 /* compile */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = compile; sourceTree = "<group>"; };
 		6F15553225EF5B7900325AF5 /* automate */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = automate; sourceTree = "<group>"; };
-		6FB964802637043A007FAE27 /* stubs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stubs.c; sourceTree = "<group>"; };
-		6FB964812637043A007FAE27 /* omp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = omp.h; sourceTree = "<group>"; };
-		6FB964822637043A007FAE27 /* omp-tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "omp-tools.h"; sourceTree = "<group>"; };
-		6FB964832637043A007FAE27 /* ompd-types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ompd-types.h"; sourceTree = "<group>"; };
 		6FF4A05325D6652800E30B61 /* Parallel programming */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Parallel programming"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FF4A05625D6652800E30B61 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -46,17 +41,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6FB9647F2637043A007FAE27 /* OpenMP sources */ = {
-			isa = PBXGroup;
-			children = (
-				6FB964802637043A007FAE27 /* stubs.c */,
-				6FB964812637043A007FAE27 /* omp.h */,
-				6FB964822637043A007FAE27 /* omp-tools.h */,
-				6FB964832637043A007FAE27 /* ompd-types.h */,
-			);
-			path = "OpenMP sources";
-			sourceTree = "<group>";
-		};
 		6FF4A04A25D6652800E30B61 = {
 			isa = PBXGroup;
 			children = (
@@ -76,7 +60,6 @@
 		6FF4A05525D6652800E30B61 /* Parallel programming */ = {
 			isa = PBXGroup;
 			children = (
-				6FB9647F2637043A007FAE27 /* OpenMP sources */,
 				6FF4A05625D6652800E30B61 /* main.c */,
 				6F15553225EF5B7900325AF5 /* automate */,
 				6F15553125EF5B7900325AF5 /* compile */,
@@ -142,7 +125,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FF4A05725D6652800E30B61 /* main.c in Sources */,
-				6FB964842637043A007FAE27 /* stubs.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
