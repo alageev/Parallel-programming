@@ -1,2 +1,2 @@
 #!/bin/bash
-dpcpp main.c -o main -lm
+dpcpp main.c -o main -fopenmp

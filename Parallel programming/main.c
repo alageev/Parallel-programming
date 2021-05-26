@@ -12,15 +12,10 @@
 #include <unistd.h>
 
 //#include "OpenMP sources/omp.h"
+
 #ifdef _OPENMP
 
-#include "omp.h"
-void timer(int* completion) {
-    while (*completion < 100) {
-        sleep(1);
-        printf("completion: %d\n", *completion);
-    }
-}
+#include <omp.h>
 
 #else
 
@@ -32,14 +27,7 @@ int omp_get_num_procs() {
     return 1;
 }
 
-void timer(int* completion) {
-    unsigned second = 0;
-    while (*completion < 100) {
-        printf("%d: %d\n", second, *completion);
-        sleep(1);
-        second++;
-    }
-}
+
 #endif// ifdef _OPENMP
 
 
@@ -47,7 +35,7 @@ void timer(int* completion) {
 //MARK:- Task
 // A = сount(Агеев) * сount(Алексей) * сount(Дмитриевич) = 5 * 7 * 10 = 350
 int const aTask = 350;
-#define NUMBER_OF_ITERATIONS 5
+#define NUMBER_OF_ITERATIONS 50
 
 // X_1 = 1 + ((350 mod 47) mod 7) = 1 + (21 mod 7) = 1
 // Гиперболический синус с последующим возведением в квадрат
@@ -69,28 +57,28 @@ void reduce(double*, double*, const int);
 void selectionSortOfPart(double*, const int, const int);
 //void mergeParts(double*, const int, const int);
 void mergeParts(double*, const int, const int, const int);
-void timer(int*);
+void timer(double*);
 
 //MARK:- main()
 int main(int argc, const char * argv[]) {
+    double completion = 0;
 
-    #pragma omp parallel sections
+    #pragma omp parallel sections shared(completion)
     {
-        int completion = 0;
         
-        #pragma omp section shared(completion)
+        #pragma omp section
         {
             timer(&completion);
         }
-    
-        #pragma omp section shared(completion)
+
+        #pragma omp section
         {
             int const length = atoi(argv[1]);
             unsigned seed;
             double results[NUMBER_OF_ITERATIONS] = { 0 };
 
             double const startTime = omp_get_wtime();
-            
+
             for (unsigned i = 0; i < NUMBER_OF_ITERATIONS; i++) {
                 srand(i);
                 double firstArray[length];
@@ -115,10 +103,10 @@ int main(int argc, const char * argv[]) {
 
                 //MARK:- Reduce
                 reduce(secondArray, results + i, length / 2);
-                
-                completion += 100 / NUMBER_OF_ITERATIONS;
+
+                completion += 100.0 / NUMBER_OF_ITERATIONS;
             }
-            
+
             printf("\nN=%d. Milliseconds passed: %f\n", length, 1000 * (omp_get_wtime() - startTime));
         }
     }
@@ -177,18 +165,18 @@ void selectionSort(double* array, const int length) {
     int const numberOfSortingThreads = omp_get_num_procs() - 1;
     int const partSize = length / numberOfSortingThreads;
     int const lastPartSize = length - (numberOfSortingThreads) * partSize;
-    
+
     #pragma omp parallel sections
     {
         for (int i = 0; i < numberOfSortingThreads; i++) {
             #pragma omp section
             selectionSortOfPart(array, i * partSize, partSize);
         }
-        
+
         #pragma omp section
         selectionSortOfPart(array, numberOfSortingThreads * partSize, lastPartSize);
     }
-    
+
     mergeParts(array, partSize, length, numberOfSortingThreads + 1);
 }
 
@@ -227,7 +215,7 @@ void reduce(double* array, double* result, const int length) {
 /// @param offset offset index
 /// @param length length of the array
 void selectionSortOfPart(double* array, const int offset, const int length) {
-    
+
     for (int i = offset; i < offset + length - 1; i++) {
         int minIndex = i;
         int localIndex = minIndex;
@@ -262,56 +250,56 @@ void selectionSortOfPart(double* array, const int offset, const int length) {
 /// @param length length of the part
 /// @param numberOfParts number of parts in array
 void mergeParts(double* array, const int partSize, const int length, const int numberOfParts) {
-    
+
     selectionSortOfPart(array, 0, length);
-    
+
     // Сергей Мороз сказал, что mergesort тут использовать не надо было
     // надо было просто отсортировать массив ещё раз
     // честно плакал, когда услышал это
     // потому что дебажил этот код как никогда не дебажил
     // оставлю его тут на память
-    
+
     /*
     double copy[length];
     int indices[numberOfParts];
     int indicesCeil[numberOfParts];
-    
-    
+
+
     #pragma omp parallel shared(copy, array)
     {
         #pragma omp for nowait
         for (int i = 0; i < length; i++) {
             copy[i] = array[i];
         }
-        
+
         #pragma omp for
         for (int i = 0; i < numberOfParts; i++) {
             indices[i] = i * partSize;
         }
-        
+
         #pragma omp for
         for (int i = 0; i < numberOfParts - 1; i++) {
             indicesCeil[i] = indices[i + 1];
         }
-        
+
         indicesCeil[numberOfParts - 1] = length;
     }
-    
+
     for (int i = 0; i < length; i++) {
         int position = 0;
-        
+
         for (int j = 0; j < numberOfParts; j++) {
             if (indices[j] < indicesCeil[j]) {
                 position = j;
                 break;
             }
         }
-        
+
         int localPosition = position;
-        
+
         #pragma omp parallel shared(position) private(localPosition)
         {
-            
+
             #pragma omp for
             for (int j = 0; j < numberOfParts; j++) {
                 if (indices[j] < indicesCeil[j]) {
@@ -320,15 +308,24 @@ void mergeParts(double* array, const int partSize, const int length, const int n
                     }
                 }
             }
-            
+
             #pragma omp critical
             if (copy[indices[localPosition]] < copy[indices[position]]) {
                 position = localPosition;
             }
         }
-        
+
         array[i] = copy[indices[position]];
         indices[position]++;
     }
     */
+}
+
+void timer(double* completion) {
+    int second = 0;
+    while (*completion < 100) {
+        sleep(1);
+        second++;
+        printf("%d: %f\n", second, *completion);
+    }
 }
